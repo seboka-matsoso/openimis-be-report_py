@@ -1,5 +1,0 @@
-cached-property
-django
-django-db-signals
-djangorestframework
-nepalicalendar
