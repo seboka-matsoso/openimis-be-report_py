@@ -24,6 +24,7 @@ setup(
         'djangorestframework',
         'cached-property',
         'nepalicalendar',
+        'openimis-be-core',
     ],   
     classifiers=[
         'Environment :: Web Environment',
