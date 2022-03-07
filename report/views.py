@@ -1,8 +1,10 @@
 import logging
 
-from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
+from django.template import loader
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 
 from report.services import get_report_definition, generate_report
 from .apps import ReportConfig
@@ -20,13 +22,23 @@ def report(request, module_name, report_name, report_format="pdf", alternate=Non
     :param alternate: Future use, allows several templates for a single report: different languages or report variants
     :return: view
     """
-    logger.debug("report name %s in module %s in %s format", report_name, module_name, report_format)
+    logger.debug(
+        "report name %s in module %s in %s format",
+        report_name,
+        module_name,
+        report_format,
+    )
     report_config = ReportConfig.get_report(module_name, report_name)
     if not report_config:
         raise Http404("Poll does not exist")
-    report_definition = get_report_definition(report_name, report_config["default_report"])
+    report_definition = get_report_definition(
+        report_name, report_config["default_report"]
+    )
     # parameters tend to get put in lists because they *could* be repeated
-    unlisted = {k: (v[0] if isinstance(v, list) and len(v) == 0 else v) for k, v in request.GET.items()}
+    unlisted = {
+        k: (v[0] if isinstance(v, list) and len(v) == 0 else v)
+        for k, v in request.GET.items()
+    }
 
     # TODO enable with latest JWT PR
     # if report_config.get("permission") and \
@@ -42,3 +54,15 @@ def report(request, module_name, report_name, report_format="pdf", alternate=Non
         data,
         report_format,
     )
+
+
+@xframe_options_exempt
+def report_designer(request):
+    template = loader.get_template("report/reportbro.html")
+
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def preview_report(request):
+    pass
