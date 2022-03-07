@@ -42,8 +42,10 @@ class ReportGQLType(graphene.ObjectType):
     definition = graphene.String()
     description = graphene.String()
     module = graphene.String()
-    python_query = graphene.String()
     permission = graphene.String()
+
+    def resolve_definition(self, info, **kwargs):
+        return get_report_definition(self.get("name"), self.get("default_report"))
 
 
 class Query(graphene.ObjectType):
@@ -52,29 +54,19 @@ class Query(graphene.ObjectType):
         show_history=graphene.Boolean(),
         search=graphene.String(description=gettext_lazy("Search in `name` & `code`")),
     )
-    report_definition = graphene.Field(ReportDefinitionGQLType, id=graphene.ID(), uuid=graphene.String())
+    report_definition = graphene.Field(
+        ReportDefinitionGQLType, id=graphene.ID(), uuid=graphene.String()
+    )
+    reports = graphene.List(ReportGQLType)
+    report = graphene.Field(ReportGQLType, name=graphene.String(required=True))
 
-    report_list = graphene.List(ReportGQLType)
+    def resolve_reports(self, info, **kwargs):
+        return [report for report in ReportConfig.reports]
 
-    def resolve_report_list(self, info, **kwargs):
-        # check if the full definition is required (to avoid unnecessary database lookup on each row)
-        try:
-            definition_requested = "definition" in (x.name.value for x in info.field_asts[0].selection_set.selections)
-        except:
-            definition_requested = False
-        return [
-            ReportGQLType(
-                name=report.get("name"),
-                default_report=report.get("default_report"),
-                description=report.get("description"),
-                module=report.get("module"),
-                # python_query=report.get("python_query"),  # Don't expose python internals
-                permission=report.get("permission"),
-                definition=get_report_definition(report.get("name"), report.get("default_report"))
-                if definition_requested else None
-            )
-            for report in ReportConfig.reports
-        ]
+    def resolve_report(self, info, name, **kwargs):
+        for report in ReportConfig.reports:
+            if report.get("name") == name:
+                return report
 
     def resolve_report_definition(self, info, **kwargs):
         # if not info.context.user.has_perms(ReportConfig.gql_query_report_definitions_perms):
@@ -111,9 +103,9 @@ class Query(graphene.ObjectType):
 
 
 def update_or_create_report_definition(data, user):
-    data.pop('client_mutation_id', None)
-    data.pop('client_mutation_label', None)
-    report_definition_uuid = data.pop('uuid', None)
+    data.pop("client_mutation_id", None)
+    data.pop("client_mutation_label", None)
+    report_definition_uuid = data.pop("uuid", None)
     if report_definition_uuid:
         report_definition = ReportDefinition.objects.get(uuid=report_definition_uuid)
         # reset_report_definition_before_update(report_definition)
@@ -136,6 +128,7 @@ class CreateReportDefinitionMutation(OpenIMISMutation):
     """
     Create a new Report Definition Override (the default is provided by the report itself)
     """
+
     _mutation_module = "report"
     _mutation_class = "CreateReportDefinitionMutation"
 
@@ -146,24 +139,24 @@ class CreateReportDefinitionMutation(OpenIMISMutation):
     def async_mutate(cls, user, **data):
         try:
             if type(user) is AnonymousUser or not user.id:
-                raise ValidationError(
-                    _("mutation.authentication_required"))
+                raise ValidationError(_("mutation.authentication_required"))
             # if not user.has_perms(ReportConfig.gql_mutation_create_families_perms):
             #     raise PermissionDenied(_("unauthorized"))
             # data['audit_user_id'] = user.id_for_audit
 
             from core.utils import TimeUtils
+
             if "validity_from" not in data:
-                data['validity_from'] = TimeUtils.now()
-            #client_mutation_id = data.get("client_mutation_id")
-            report_definition = update_or_create_report_definition(data, user)
-            # FamilyMutation.object_mutated(user, client_mutation_id=client_mutation_id, family=family)
+                data["validity_from"] = TimeUtils.now()
+            update_or_create_report_definition(data, user)
             return None
         except Exception as exc:
             logger.exception("report.mutation.failed_to_create_report_definition")
-            return [{
-                'message': _("report.mutation.failed_to_create_report_definition"),
-                'detail': str(exc)}
+            return [
+                {
+                    "message": _("report.mutation.failed_to_create_report_definition"),
+                    "detail": str(exc),
+                }
             ]
 
 
@@ -171,6 +164,7 @@ class UpdateReportDefinitionMutation(OpenIMISMutation):
     """
     Update an existing Report Definition Override (the default is provided by the report itself)
     """
+
     _mutation_module = "report"
     _mutation_class = "UpdateReportDefinitionMutation"
 
@@ -181,24 +175,24 @@ class UpdateReportDefinitionMutation(OpenIMISMutation):
     def async_mutate(cls, user, **data):
         try:
             if type(user) is AnonymousUser or not user.id:
-                raise ValidationError(
-                    _("mutation.authentication_required"))
+                raise ValidationError(_("mutation.authentication_required"))
             # if not user.has_perms(ReportConfig.gql_mutation_create_families_perms):
             #     raise PermissionDenied(_("unauthorized"))
             # data['audit_user_id'] = user.id_for_audit
 
             from core.utils import TimeUtils
+
             if "validity_from" not in data:
-                data['validity_from'] = TimeUtils.now()
-            client_mutation_id = data.get("client_mutation_id")
-            report_definition = update_or_create_report_definition(data, user)
-            # FamilyMutation.object_mutated(user, client_mutation_id=client_mutation_id, family=family)
+                data["validity_from"] = TimeUtils.now()
+            update_or_create_report_definition(data, user)
             return None
         except Exception as exc:
             logger.exception("report.mutation.failed_to_update_report_definition")
-            return [{
-                'message': _("report.mutation.failed_to_update_report_definition"),
-                'detail': str(exc)}
+            return [
+                {
+                    "message": _("report.mutation.failed_to_update_report_definition"),
+                    "detail": str(exc),
+                }
             ]
 
 
