@@ -56,9 +56,9 @@ class ReportConfig(AppConfig):
         ReportConfig.gql_mutation_report_delete_perms = cfg["gql_mutation_report_delete_perms"]
 
     @classmethod
-    def get_report(cls, module_name, report_name):
+    def get_report(cls, report_name):
         for report in cls.reports:
-            if report["module"] == module_name and report["name"] == report_name:
+            if report["name"] == report_name:
                 return report
         return None
 
