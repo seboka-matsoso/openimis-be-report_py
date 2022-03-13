@@ -14,6 +14,7 @@ DEFAULT_CFG = {
     "gql_mutation_report_delete_perms": ["121004"],
 }
 
+
 class ReportConfig(AppConfig):
     name = MODULE_NAME
 
@@ -51,19 +52,26 @@ class ReportConfig(AppConfig):
 
     def _configure_permissions(self, cfg):
         ReportConfig.gql_query_report_perms = cfg["gql_query_report_perms"]
-        ReportConfig.gql_mutation_report_add_perms = cfg["gql_mutation_report_add_perms"]
-        ReportConfig.gql_mutation_report_edit_perms = cfg["gql_mutation_report_edit_perms"]
-        ReportConfig.gql_mutation_report_delete_perms = cfg["gql_mutation_report_delete_perms"]
+        ReportConfig.gql_mutation_report_add_perms = cfg[
+            "gql_mutation_report_add_perms"
+        ]
+        ReportConfig.gql_mutation_report_edit_perms = cfg[
+            "gql_mutation_report_edit_perms"
+        ]
+        ReportConfig.gql_mutation_report_delete_perms = cfg[
+            "gql_mutation_report_delete_perms"
+        ]
 
     @classmethod
-    def get_report(cls, module_name, report_name):
+    def get_report(cls, report_name):
         for report in cls.reports:
-            if report["module"] == module_name and report["name"] == report_name:
+            if report["name"] == report_name:
                 return report
         return None
 
     def ready(self):
         from core.models import ModuleConfiguration
+
         cfg = ModuleConfiguration.get_or_default(MODULE_NAME, DEFAULT_CFG)
         self._configure_permissions(cfg)
 
@@ -72,10 +80,13 @@ class ReportConfig(AppConfig):
         for app in all_apps:
             try:
                 appreports = __import__(f"{app}.report")
-                if hasattr(appreports.report, "report_definitions") \
-                        and isinstance(appreports.report.report_definitions, list):
+                if hasattr(appreports.report, "report_definitions") and isinstance(
+                    appreports.report.report_definitions, list
+                ):
                     self.reports += appreports.report.report_definitions
-                    logger.debug(f"{app} {len(appreports.report.report_definitions)} reports loaded")
+                    logger.debug(
+                        f"{app} {len(appreports.report.report_definitions)} reports loaded"
+                    )
             except ModuleNotFoundError as exc:
                 # The module doesn't have a schema.py, just skip
                 logger.debug(f"{app} has no schema module, skipping")
@@ -85,4 +96,3 @@ class ReportConfig(AppConfig):
             except Exception as exc:
                 logger.debug(f"{app} exception", exc)
         logger.debug("done loading reports")
-
