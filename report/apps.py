@@ -9,9 +9,9 @@ MODULE_NAME = "report"
 
 DEFAULT_CFG = {
     "gql_query_report_perms": ["131200"],
-    "gql_mutation_report_add_perms": ["121002"],
-    "gql_mutation_report_edit_perms": ["121003"],
-    "gql_mutation_report_delete_perms": ["121004"],
+    "gql_mutation_report_add_perms": ["131201"],
+    "gql_mutation_report_edit_perms": ["131202"],
+    "gql_mutation_report_delete_perms": ["131203"],
 }
 
 
