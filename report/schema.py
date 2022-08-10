@@ -26,7 +26,8 @@ class ReportGQLType(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    reports = graphene.List(ReportGQLType)
+    reports = graphene.List(ReportGQLType,
+                            description="This lists all the available reports on the system, exposed by each module")
     report = graphene.Field(
         ReportGQLType,
         name=graphene.String(required=True),
