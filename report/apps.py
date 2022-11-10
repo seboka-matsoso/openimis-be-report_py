@@ -9,9 +9,9 @@ MODULE_NAME = "report"
 
 DEFAULT_CFG = {
     "gql_query_report_perms": ["131200"],
-    "gql_mutation_report_add_perms": ["121002"],
-    "gql_mutation_report_edit_perms": ["121003"],
-    "gql_mutation_report_delete_perms": ["121004"],
+    "gql_mutation_report_add_perms": ["131201"],
+    "gql_mutation_report_edit_perms": ["131202"],
+    "gql_mutation_report_delete_perms": ["131203"],
 }
 
 
@@ -88,10 +88,10 @@ class ReportConfig(AppConfig):
                         f"{app} {len(appreports.report.report_definitions)} reports loaded"
                     )
             except ModuleNotFoundError as exc:
-                # The module doesn't have a schema.py, just skip
-                logger.debug(f"{app} has no schema module, skipping")
+                # The module doesn't have a report.py, just skip
+                logger.debug(f"{app} has no report module, skipping")
             except AttributeError as exc:
-                logger.debug(f"{app} queries couldn't be loaded")
+                logger.debug(f"{app} reports couldn't be loaded")
                 raise  # This can be hiding actual compilation errors
             except Exception as exc:
                 logger.debug(f"{app} exception", exc)
