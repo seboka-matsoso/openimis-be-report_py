@@ -26,15 +26,21 @@ class ReportGQLType(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    reports = graphene.List(ReportGQLType,
-                            description="This lists all the available reports on the system, exposed by each module")
+    reports = graphene.List(
+        ReportGQLType,
+        description="This lists all the available reports on the system, exposed by each module",
+    )
     report = graphene.Field(
         ReportGQLType,
         name=graphene.String(required=True),
     )
 
     def resolve_reports(self, info, **kwargs):
-        return [report for report in ReportConfig.reports]
+        return [
+            report
+            for report in ReportConfig.reports
+            if info.context.user.has_perms(report["permission"])
+        ]
 
     def resolve_report(self, info, name, **kwargs):
         return ReportConfig.get_report(name)
