@@ -9,6 +9,7 @@ from core.utils import TimeUtils
 from report.apps import ReportConfig
 from report.models import ReportDefinition
 from report.services import get_report_definition
+from django.core.exceptions import PermissionDenied
 
 logger = logging.getLogger(__file__)
 
@@ -22,21 +23,33 @@ class ReportGQLType(graphene.ObjectType):
     permission = graphene.String()
 
     def resolve_definition(self, info, **kwargs):
+        if not info.context.user.has_perms(ReportConfig.gql_query_report_perms):
+            raise PermissionDenied(_("unauthorized"))
         return get_report_definition(self.get("name"), self.get("default_report"))
 
 
 class Query(graphene.ObjectType):
-    reports = graphene.List(ReportGQLType,
-                            description="This lists all the available reports on the system, exposed by each module")
+    reports = graphene.List(
+        ReportGQLType,
+        description="This lists all the available reports on the system, exposed by each module",
+    )
     report = graphene.Field(
         ReportGQLType,
         name=graphene.String(required=True),
     )
 
     def resolve_reports(self, info, **kwargs):
-        return [report for report in ReportConfig.reports]
+        if not info.context.user.has_perms(ReportConfig.gql_query_report_perms):
+            raise PermissionDenied(_("unauthorized"))
+        return [
+            report
+            for report in ReportConfig.reports
+            if info.context.user.has_perms(report["permission"])
+        ]
 
     def resolve_report(self, info, name, **kwargs):
+        if not info.context.user.has_perms(ReportConfig.gql_query_report_perms):
+            raise PermissionDenied(_("unauthorized"))
         return ReportConfig.get_report(name)
 
 
@@ -49,7 +62,7 @@ def update_or_create_report_definition(data, user):
         name=name, validity_to__isnull=True
     ).first()
     if report_definition:
-        report_definition.validity_to = TimeUtils.now()
+        report_definition.save_history()
     else:
         template = ReportConfig.get_report(name)
         report_definition = ReportDefinition.objects.create(
@@ -78,6 +91,10 @@ class OverrideReportMutation(OpenIMISMutation):
         try:
             if type(user) is AnonymousUser or not user.id:
                 raise ValidationError(_("mutation.authentication_required"))
+            if not user.has_perms(ReportConfig.gql_mutation_report_add_perms):
+                raise PermissionDenied(_("unauthorized"))
+            if not user.has_perms(ReportConfig.gql_mutation_report_edit_perms):
+                raise PermissionDenied(_("unauthorized"))
 
             update_or_create_report_definition(data, user)
             return None
