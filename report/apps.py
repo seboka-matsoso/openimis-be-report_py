@@ -73,86 +73,10 @@ class ReportConfig(AppConfig):
 
     reports = []
 
-    def _configure_permissions(self, cfg):
-        ReportConfig.gql_query_report_perms = cfg["gql_query_report_perms"]
-        ReportConfig.gql_mutation_report_add_perms = cfg[
-            "gql_mutation_report_add_perms"
-        ]
-        ReportConfig.gql_mutation_report_edit_perms = cfg[
-            "gql_mutation_report_edit_perms"
-        ]
-        ReportConfig.gql_mutation_report_delete_perms = cfg[
-            "gql_mutation_report_delete_perms"
-        ]
-        ReportConfig.gql_reports_primary_operational_indicator_policies_perms = cfg[
-            "gql_reports_primary_operational_indicator_policies_perms"
-        ]
-        ReportConfig.gql_reports_primary_operational_indicators_claims_perms = cfg[
-            "gql_reports_primary_operational_indicators_claims_perms"
-        ]
-        ReportConfig.gql_reports_derived_operational_indicators_perms = cfg[
-            "gql_reports_derived_operational_indicators_perms"
-        ]
-        ReportConfig.gql_reports_contribution_collection_perms = cfg[
-            "gql_reports_contribution_collection_perms"
-        ]
-        ReportConfig.gql_reports_product_sales_perms = cfg[
-            "gql_reports_product_sales_perms"
-        ]
-        ReportConfig.gql_reports_contribution_distribution_perms = cfg[
-            "gql_reports_contribution_distribution_perms"
-        ]
-        ReportConfig.gql_reports_user_activity_perms = cfg[
-            "gql_reports_user_activity_perms"
-        ]
-        ReportConfig.gql_reports_enrolment_performance_indicators_perms = cfg[
-            "gql_reports_enrolment_performance_indicators_perms"
-        ]
-        ReportConfig.gql_reports_status_of_register_perms = cfg[
-            "gql_reports_status_of_register_perms"
-        ]
-        ReportConfig.gql_reports_insuree_without_photos_perms = cfg[
-            "gql_reports_insuree_without_photos_perms"
-        ]
-        ReportConfig.gql_reports_payment_category_overview_perms = cfg[
-            "gql_reports_payment_category_overview_perms"
-        ]
-        ReportConfig.gql_reports_matching_funds_perms = cfg[
-            "gql_reports_matching_funds_perms"
-        ]
-        ReportConfig.gql_reports_claim_overview_report_perms = cfg[
-            "gql_reports_claim_overview_report_perms"
-        ]
-        ReportConfig.gql_reports_percentage_referrals_perms = cfg[
-            "gql_reports_percentage_referrals_perms"
-        ]
-        ReportConfig.gql_reports_families_insurees_overview_perms = cfg[
-            "gql_reports_families_insurees_overview_perms"
-        ]
-        ReportConfig.gql_reports_pending_insurees_perms = cfg[
-            "gql_reports_pending_insurees_perms"
-        ]
-        ReportConfig.gql_reports_renewals_perms = cfg[
-            "gql_reports_renewals_perms"
-        ]
-        ReportConfig.gql_reports_capitation_payment_perms = cfg[
-            "gql_reports_capitation_payment_perms"
-        ]
-        ReportConfig.gql_reports_rejected_photo_perms = cfg[
-            "gql_reports_rejected_photo_perms"
-        ]
-        ReportConfig.gql_reports_contribution_payment_perms = cfg[
-            "gql_reports_contribution_payment_perms"
-        ]
-        ReportConfig.gql_reports_control_number_assignment_perms = cfg[
-            "gql_reports_control_number_assignment_perms"
-        ]
-        ReportConfig.gql_reports_overview_of_commissions_perms = cfg[
-            "gql_reports_overview_of_commissions_perms"
-        ]
-        ReportConfig.gql_reports_claim_history_report_perms = cfg[
-            "gql_reports_claim_history_report_perms"
-        ]
+    def __load_config(self, cfg):
+        for field in cfg:
+            if hasattr(ReportConfig, field):
+                setattr(ReportConfig, field, cfg[field])
 
     @classmethod
     def get_report(cls, report_name):
@@ -165,7 +89,7 @@ class ReportConfig(AppConfig):
         from core.models import ModuleConfiguration
 
         cfg = ModuleConfiguration.get_or_default(MODULE_NAME, DEFAULT_CFG)
-        self._configure_permissions(cfg)
+        self.__load_config(cfg)
 
         all_apps = openimis_apps()
 
