@@ -9,7 +9,6 @@ MODULE_NAME = "report"
 
 DEFAULT_CFG = {
     "gql_query_report_perms": ["131200"],
-
     "gql_reports_primary_operational_indicator_policies_perms": ["131201"],
     "gql_reports_primary_operational_indicators_claims_perms": ["131202"],
     "gql_reports_derived_operational_indicators_perms": ["131203"],
@@ -43,33 +42,33 @@ DEFAULT_CFG = {
 class ReportConfig(AppConfig):
     name = MODULE_NAME
 
-    gql_query_report_perms: []
-    gql_mutation_report_add_perms: []
-    gql_mutation_report_edit_perms: []
-    gql_mutation_report_delete_perms: []
-    gql_reports_primary_operational_indicator_policies_perms: []
-    gql_reports_primary_operational_indicators_claims_perms: []
-    gql_reports_derived_operational_indicators_perms: []
-    gql_reports_contribution_collection_perms: []
-    gql_reports_product_sales_perms: []
-    gql_reports_contribution_distribution_perms: []
-    gql_reports_user_activity_perms: []
-    gql_reports_enrolment_performance_indicators_perms: []
-    gql_reports_status_of_register_perms: []
-    gql_reports_insuree_without_photos_perms: []
-    gql_reports_payment_category_overview_perms: []
-    gql_reports_matching_funds_perms: []
-    gql_reports_claim_overview_report_perms: []
-    gql_reports_percentage_referrals_perms: []
-    gql_reports_families_insurees_overview_perms: []
-    gql_reports_pending_insurees_perms: []
-    gql_reports_renewals_perms: []
-    gql_reports_capitation_payment_perms: []
-    gql_reports_rejected_photo_perms: []
-    gql_reports_contribution_payment_perms: []
-    gql_reports_control_number_assignment_perms: []
-    gql_reports_overview_of_commissions_perms: []
-    gql_reports_claim_history_report_perms: []
+    gql_query_report_perms = []
+    gql_mutation_report_add_perms = []
+    gql_mutation_report_edit_perms = []
+    gql_mutation_report_delete_perms = []
+    gql_reports_primary_operational_indicator_policies_perms = []
+    gql_reports_primary_operational_indicators_claims_perms = []
+    gql_reports_derived_operational_indicators_perms = []
+    gql_reports_contribution_collection_perms = []
+    gql_reports_product_sales_perms = []
+    gql_reports_contribution_distribution_perms = []
+    gql_reports_user_activity_perms = []
+    gql_reports_enrolment_performance_indicators_perms = []
+    gql_reports_status_of_register_perms = []
+    gql_reports_insuree_without_photos_perms = []
+    gql_reports_payment_category_overview_perms = []
+    gql_reports_matching_funds_perms = []
+    gql_reports_claim_overview_report_perms = []
+    gql_reports_percentage_referrals_perms = []
+    gql_reports_families_insurees_overview_perms = []
+    gql_reports_pending_insurees_perms = []
+    gql_reports_renewals_perms = []
+    gql_reports_capitation_payment_perms = []
+    gql_reports_rejected_photo_perms = []
+    gql_reports_contribution_payment_perms = []
+    gql_reports_control_number_assignment_perms = []
+    gql_reports_overview_of_commissions_perms = []
+    gql_reports_claim_history_report_perms = []
 
     reports = []
 
