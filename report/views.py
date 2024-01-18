@@ -30,6 +30,7 @@ def report(request, report_name, report_format="pdf", alternate=None):
     :param alternate: Future use, allows several templates for a single report: different languages or report variants
     :return: view
     """
+    logger.info("Here first")
     logger.debug(
         "report name %s in %s format",
         report_name,
@@ -37,6 +38,7 @@ def report(request, report_name, report_format="pdf", alternate=None):
     )
     report_config = ReportConfig.get_report(report_name)
     if not report_config:
+        logger.INFO("I got here 1S")
         raise Http404("Poll does not exist")
     report_definition = get_report_definition(
         report_name, report_config["default_report"]
