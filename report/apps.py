@@ -23,7 +23,6 @@ DEFAULT_CFG = {
     "gql_reports_matching_funds_perms": ["131212"],
     "gql_reports_claim_overview_report_perms": ["131213"],
     "gql_reports_percentage_referrals_perms": ["131214"],
-    "gql_reports_claim_elligibility_perms": ["131214"],
     "gql_reports_families_insurees_overview_perms": ["131215"],
     "gql_reports_pending_insurees_perms": ["131216"],
     "gql_reports_renewals_perms": ["131217"],
@@ -33,10 +32,10 @@ DEFAULT_CFG = {
     "gql_reports_control_number_assignment_perms": ["131221"],
     "gql_reports_overview_of_commissions_perms": ["131222"],
     "gql_reports_claim_history_report_perms": ["131223"],
-
     "gql_mutation_report_add_perms": ["131224"],
     "gql_mutation_report_edit_perms": ["131225"],
     "gql_mutation_report_delete_perms": ["131226"],
+    "gql_reports_claim_elligibility_perms": ["131227"],
 }
 
 
@@ -101,8 +100,7 @@ class ReportConfig(AppConfig):
                     appreports.report.report_definitions, list
                 ):
                     self.reports += appreports.report.report_definitions
-                    logger.debug(
-                        f"{app} {len(appreports.report.report_definitions)} reports loaded"
+                    logger.debug(f"{app} {len(appreports.report.report_definitions)} reports loaded"
                     )
             except ModuleNotFoundError as exc:
                 # The module doesn't have a report.py, just skip
