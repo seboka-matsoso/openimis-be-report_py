@@ -22,6 +22,7 @@ DEFAULT_CFG = {
     "gql_reports_payment_category_overview_perms": ["131211"],
     "gql_reports_matching_funds_perms": ["131212"],
     "gql_reports_claim_overview_report_perms": ["131213"],
+    "gql_reports_elligibility_perms": ["131214"],
     "gql_reports_percentage_referrals_perms": ["131214"],
     "gql_reports_families_insurees_overview_perms": ["131215"],
     "gql_reports_pending_insurees_perms": ["131216"],
@@ -34,8 +35,7 @@ DEFAULT_CFG = {
     "gql_reports_claim_history_report_perms": ["131223"],
     "gql_mutation_report_add_perms": ["131224"],
     "gql_mutation_report_edit_perms": ["131225"],
-    "gql_mutation_report_delete_perms": ["131226"],
-    "gql_reports_claim_elligibility_perms": ["131227"],
+    "gql_mutation_report_delete_perms": ["131226"]
 }
 
 
@@ -59,7 +59,7 @@ class ReportConfig(AppConfig):
     gql_reports_payment_category_overview_perms = []
     gql_reports_matching_funds_perms = []
     gql_reports_claim_overview_report_perms = []
-    gql_reports_claim_elligibility_perms = []
+    gql_reports_elligibility_perms = []
     gql_reports_percentage_referrals_perms = []
     gql_reports_families_insurees_overview_perms = []
     gql_reports_pending_insurees_perms = []
