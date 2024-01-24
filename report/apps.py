@@ -23,7 +23,7 @@ DEFAULT_CFG = {
     "gql_reports_matching_funds_perms": ["131212"],
     "gql_reports_claim_overview_report_perms": ["131213"],
     "gql_reports_elligibility_perms": ["131214"],
-    "gql_reports_percentage_referrals_perms": ["131214"],
+    "gql_reports_percentage_referral_perms": ["131214"],
     "gql_reports_families_insurees_overview_perms": ["131215"],
     "gql_reports_pending_insurees_perms": ["131216"],
     "gql_reports_renewals_perms": ["131217"],
@@ -60,7 +60,7 @@ class ReportConfig(AppConfig):
     gql_reports_matching_funds_perms = []
     gql_reports_claim_overview_report_perms = []
     gql_reports_elligibility_perms = []
-    gql_reports_percentage_referrals_perms = []
+    gql_reports_percentage_referral_perms = []
     gql_reports_families_insurees_overview_perms = []
     gql_reports_pending_insurees_perms = []
     gql_reports_renewals_perms = []
